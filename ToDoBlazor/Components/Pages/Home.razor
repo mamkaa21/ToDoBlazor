@@ -1,0 +1,86 @@
+﻿@page "/"
+@using ToDoBlazor.DB
+@inject ToDoBlazorContext context;
+
+
+<PageTitle>Home</PageTitle>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-1 m-3">
+            <h1>Введите задачу:</h1>
+            <input type="text" />     
+                <button> Добавить</button>          
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col">
+            <div class="container m-1">
+                <button class="btn type="submit" @onclick="(()=> AllTask())"> Все задачи</button>
+                <button class="btn type="submit" @onclick="(()=> IsCompletedTask())"> Выполненные </button>
+                <button class="btn type="submit" @onclick="(()=> NotCompletedTask())"> Невыполненные </button>
+            </div>
+           
+            @if (tasks.Count != 0)
+            {
+                @foreach (var item in tasks)
+                {
+                    <div class="row m-4">
+                        <div class="col-1 align-content-center">
+                            <div class="form-check ">
+                                <input class="form-check-input" type="checkbox" @bind-value="@item.IsCompleted" id="flexCheckChecked" checked>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <div class="card " style="width: 18rem;">
+                                <div class="card-body">
+                                    <div class="row-4 text-start">
+                                        <b> @item.Title</b>
+                                        <button class="btn" type="submit" @onclick="(()=> DeleteTask())"> delete  </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@code
+{
+    List<Taskit> tasks = new();
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        tasks = context.Tasks.ToList();
+    }
+
+    public void AllTask()
+    {
+        tasks = context.Tasks.ToList();
+    }
+    public void IsCompletedTask()
+    {
+        tasks = context.Tasks.Where(s => s.IsCompleted == 1).ToList();
+    }
+    public void NotCompletedTask()
+    {
+        tasks = context.Tasks.Where(s => s.IsCompleted == 0).ToList();
+    }
+     public void DeleteTask()
+    {
+
+       // tasks = context.Tasks.Remove();
+    }
+
+
+}
+
