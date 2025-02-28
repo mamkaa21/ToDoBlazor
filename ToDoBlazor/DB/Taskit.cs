@@ -7,7 +7,8 @@ public partial class Taskit
 {
     public int Id { get; set; }
 
-    public string Title { get; set; } = null!;
+    public string Title { get; set; } = "";
 
-    public ulong IsCompleted { get; set; }
+    public bool IsCompleted { get; set; }
 }
+

@@ -11,26 +11,26 @@
     <div class="row">
         <div class="col-1 m-3">
             <h1>Введите задачу:</h1>
-            <input type="text" />     
-                <button> Добавить</button>          
+            <input type="text" @bind-value="taskit.Title" />
+            <button class="btn" type="submit" @onclick="(()=> AddTask())"> Добавить</button> 
         </div>
     </div>
     <div class="row ">
         <div class="col">
             <div class="container m-1">
-                <button class="btn type="submit" @onclick="(()=> AllTask())"> Все задачи</button>
-                <button class="btn type="submit" @onclick="(()=> IsCompletedTask())"> Выполненные </button>
-                <button class="btn type="submit" @onclick="(()=> NotCompletedTask())"> Невыполненные </button>
+                <button class="btn" type="submit" @onclick="(()=> AllTask())"> Все задачи</button>
+                <button class="btn" type="submit" @onclick="(()=> IsCompletedTask())"> Выполненные </button>
+                <button class="btn" type="submit" @onclick="(()=> NotCompletedTask())"> Невыполненные </button>
             </div>
-           
+
             @if (tasks.Count != 0)
             {
                 @foreach (var item in tasks)
                 {
                     <div class="row m-4">
                         <div class="col-1 align-content-center">
-                            <div class="form-check ">
-                                <input class="form-check-input" type="checkbox" @bind-value="@item.IsCompleted" id="flexCheckChecked" checked>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @onchange="@((arg)=> ChangeStatys(item, arg))" id="flexCheckChecked" checked="@item.IsCompleted">
                             </div>
                         </div>
                         <div class="col-1">
@@ -38,7 +38,7 @@
                                 <div class="card-body">
                                     <div class="row-4 text-start">
                                         <b> @item.Title</b>
-                                        <button class="btn" type="submit" @onclick="(()=> DeleteTask())"> delete  </button>
+                                       <button class="btn" type="submit" @onclick="(()=> DeleteTask(item))"> delete  </button> 
                                     </div>
                                 </div>
                             </div>
@@ -52,10 +52,11 @@
 
 
 
-@code
+    @code
 {
     List<Taskit> tasks = new();
 
+    Taskit taskit { get; set; } = new();
 
     protected override void OnInitialized()
     {
@@ -69,18 +70,38 @@
     }
     public void IsCompletedTask()
     {
-        tasks = context.Tasks.Where(s => s.IsCompleted == 1).ToList();
+        tasks = context.Tasks.Where(s => s.IsCompleted == true).ToList();
     }
     public void NotCompletedTask()
     {
-        tasks = context.Tasks.Where(s => s.IsCompleted == 0).ToList();
+        tasks = context.Tasks.Where(s => s.IsCompleted == false).ToList();
     }
-     public void DeleteTask()
+    public void DeleteTask(Taskit taskit)
     {
+        context.Tasks.Remove(taskit);
+        context.SaveChanges();    
+        AllTask();
 
-       // tasks = context.Tasks.Remove();
     }
+    public void AddTask()
+    {
+        try
+        {
 
+            context.Tasks.Add(taskit);
+            context.SaveChanges();
+            taskit = new();
+            AllTask();
+        }
+        catch{}
 
+    }
+    public async Task ChangeStatys(Taskit taskit, ChangeEventArgs arg)
+    {
+        taskit.IsCompleted = (bool)arg.Value;
+        context.SaveChanges();
+    }
 }
+
+    
 

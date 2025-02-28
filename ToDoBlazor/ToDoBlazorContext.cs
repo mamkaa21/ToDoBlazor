@@ -34,9 +34,8 @@ public partial class ToDoBlazorContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.IsCompleted)
-                .HasDefaultValueSql("b'0'")
-                .HasColumnType("bit(1)");
+            /*entity.Property(e => e.IsCompleted)       
+                .HasColumnType("bit(1)");*/
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .UseCollation("utf8_general_ci")
