@@ -30,14 +30,14 @@
                     <div class="row m-4">
                         <div class="col-1 align-content-center">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" @onchange="@((arg)=> ChangeStatys(item, arg))" id="flexCheckChecked" checked="@item.IsCompleted">
+                                <input class="form-check-input"  type="checkbox" @onchange="@((arg)=> ChangeStatys(item, arg))" id="flexCheckChecked" checked="@item.IsCompleted">
                             </div>
                         </div>
                         <div class="col-1">
                             <div class="card " style="width: 18rem;">
                                 <div class="card-body">
                                     <div class="row-4 text-start">
-                                        <b> @item.Title</b>
+                                        <b style="@Check(item)"> @item.Title</b>
                                        <button class="btn" type="submit" @onclick="(()=> DeleteTask(item))"> delete  </button> 
                                     </div>
                                 </div>
@@ -55,6 +55,7 @@
     @code
 {
     List<Taskit> tasks = new();
+    string check = "";
 
     Taskit taskit { get; set; } = new();
 
@@ -62,7 +63,18 @@
     {
         base.OnInitialized();
         tasks = context.Tasks.ToList();
+
     }
+
+    public string Check(Taskit taskit)
+    {
+        if (taskit.IsCompleted)
+            return "text-decoration:line-through";
+        else
+            return "";
+    }
+
+
 
     public void AllTask()
     {
@@ -99,6 +111,7 @@
     public async Task ChangeStatys(Taskit taskit, ChangeEventArgs arg)
     {
         taskit.IsCompleted = (bool)arg.Value;
+        
         context.SaveChanges();
     }
 }
